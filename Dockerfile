@@ -1,19 +1,24 @@
-FROM debian:jessie
-MAINTAINER Jan Broer <janeczku@yahoo.de>
+FROM debian:stretch
 ENV DEBIAN_FRONTEND noninteractive
 
+RUN apt-get -qqy update
+RUN apt-get -qqy install gnupg1
+
 # Following 'How do I add or remove Dropbox from my Linux repository?' - https://www.dropbox.com/en/help/246
-RUN echo 'deb http://linux.dropbox.com/debian jessie main' > /etc/apt/sources.list.d/dropbox.list \
-	&& apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E \
-	&& apt-get -qqy update \
-	# Note 'ca-certificates' dependency is required for 'dropbox start -i' to succeed
-	&& apt-get -qqy install ca-certificates curl python-gpgme dropbox \
-	# Perform image clean up.
-	&& apt-get -qqy autoclean \
-	&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
-	# Create service account and set permissions.
-	&& groupadd dropbox \
-	&& useradd -m -d /dbox -c "Dropbox Daemon Account" -s /usr/sbin/nologin -g dropbox dropbox
+RUN echo 'deb http://linux.dropbox.com/debian jessie main' > /etc/apt/sources.list.d/dropbox.list
+RUN apt-key adv --keyserver pgp.mit.edu --recv-keys 1C61A2656FB57B7E4DE0F4C1FC918B335044912E
+RUN apt-get -qqy update
+
+# Note 'ca-certificates' dependency is required for 'dropbox start -i' to succeed
+RUN apt-get -qqy install ca-certificates curl python-gpgme dropbox
+
+# Perform image clean up.
+RUN apt-get -qqy autoclean
+RUN rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Create service account and set permissions.
+RUN groupadd dropbox
+RUN useradd -m -d /dbox -c "Dropbox Daemon Account" -s /usr/sbin/nologin -g dropbox dropbox
 
 # Dropbox is weird: it insists on downloading its binaries itself via 'dropbox
 # start -i'. So we switch to 'dropbox' user temporarily and let it do its thing.
