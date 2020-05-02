@@ -10,7 +10,10 @@ RUN apt-key adv --keyserver hkp://pool.sks-keyservers.net:80 --recv-keys 1C61A26
 RUN apt-get -qqy update
 
 # Note 'ca-certificates' dependency is required for 'dropbox start -i' to succeed
-RUN apt-get -qqy install ca-certificates curl python-gpg dropbox
+RUN apt-get -qqy install \
+	ca-certificates curl python-gpg libc6 libglapi-mesa libxdamage1 \
+	libxfixes3 libxcb-glx0 libxcb-dri2-0 libxcb-dri3-0 libxcb-present0 \
+	libxcb-sync1 libxshmfence1 libxxf86vm1 dropbox
 
 # Perform image clean up.
 RUN apt-get -qqy autoclean
