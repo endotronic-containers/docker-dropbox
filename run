@@ -25,6 +25,7 @@ fi
 usermod -u $DBOX_UID -g $DBOX_GID --non-unique dropbox > /dev/null 2>&1
 
 # Change ownership to dropbox account on all working folders.
+echo "Taking ownership of Dropbox folder. This may take some time..."
 chown -R $DBOX_UID:$DBOX_GID /dbox
 
 # Change permissions on Dropbox folder
